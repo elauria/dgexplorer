@@ -1,0 +1,4 @@
+dgexplorer
+==========
+
+Discogs Explorer
