@@ -79,7 +79,8 @@ $(function() {
     }
 
     genThumbnail = function(release) {
-        var thumb = '<img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
+        var thumb = '<div><img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
+        thumb += '<div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div>';
         return thumb;
     }
 
@@ -117,21 +118,24 @@ $(function() {
                 tracks.push(track);
             }
         });
+        return tracks;
 
     }
 
-    googleIt = function(tracks) {
+    genGoogleLinks = function(tracks) {
+        var html = '';
         _.each(tracks, function (track) {
             var url = 'http://www.google.com/search?q=' + track;
-            window.open(url, '_blank');
+            html += '<a href="'+url+'" target="_blank">'+track+'</a>';
         });
+        return html;
     }
 
     attachHandlers = function() {
         $('img.thumb').click(function(e) {
             var $e = $(e.currentTarget);
             var id = $e.attr('id');
-            googleIt(id);
+            $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
     }
 
