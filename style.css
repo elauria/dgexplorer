@@ -3,6 +3,12 @@ html, body {
 }
 
 #videos {
+    width: 600px;
+    float: left;
+}
+
+#thumbnails {
+    width: 100%;
 }
 
 #thumbnails #links {

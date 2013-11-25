@@ -86,7 +86,7 @@ $(function() {
     }
 
     genThumbnail = function(release) {
-        var thumb = '<div><img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
+        var thumb = '<div class="thumb"><img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
         thumb += '<div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div>';
         return thumb;
     }
