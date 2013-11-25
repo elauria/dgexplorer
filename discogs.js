@@ -1,10 +1,17 @@
 $(function() {
-    var releaseIDs = [2179932, 193966, 124884];
+    var releaseIDs = [];
     var releases = [];
     var notFound = [];
     var allVideos = [];
     var videoBatches = [];
     var releasesWithoutVideo = [];
+
+    getParameterByName = function (name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
 
     getOneRelease = function(rid, cb) {
         $.ajax({
@@ -140,6 +147,7 @@ $(function() {
     }
 
     main = function() {
+	releaseIDs = getParameterByName("ids").split('|');
         getAllReleases(releaseIDs, function() {
             getAllVideos(releases);
             videoBatches = splitVideoIds(allVideos);
