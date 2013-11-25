@@ -1,0 +1,14 @@
+html, body {
+    background: #333;
+}
+
+#videos {
+}
+
+#thumbnails #links {
+    width: 150px;
+    height: 150px;
+    background: #ccc;
+    overflow-y: auto;
+    white-space: normal;
+}
