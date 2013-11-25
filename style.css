@@ -7,6 +7,12 @@ html, body {
     float: left;
 }
 
+.thumbnail {
+    float: left;
+    margin: 10px;
+    height: 300px;
+}
+
 #thumbnails {
     width: 100%;
 }
