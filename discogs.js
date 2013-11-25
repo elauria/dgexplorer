@@ -61,7 +61,7 @@ $(function() {
     splitVideoIds = function(allVideos) {
         var videos = [];
         _.each(allVideos, function (id, i) {
-            var b = Math.floor(i/20);
+            var b = Math.floor(i/50);
             if (!videos[b]) { videos[b] = []; };
             videos[b].push(id);
         });
