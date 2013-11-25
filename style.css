@@ -1,12 +1,13 @@
 html, body {
     background: #333;
-    font-family: "Helvetica"
+    font-family: "Helvetica";
     font-size: 12px;
 }
 
 a {
     text-decoration: none;
     color: #eee;
+    margin-bottom: 5px;
 }
 
 #videos {
@@ -29,8 +30,4 @@ a {
     height: 150px;
     overflow-y: auto;
     white-space: normal;
-}
-
-#thumbnails #links a {
-    margin-bottom: 5px;
 }
