@@ -21,6 +21,11 @@ a {
     height: 300px;
 }
 
+.cover {
+    width: 150px;
+    min-height: 150px;
+}
+
 #thumbnails {
     width: 100%;
 }
