@@ -86,10 +86,9 @@ $(function() {
     }
 
     genThumbnail = function(release) {
+        var pic = release.id || "http://s.pixogs.com/images/record150.png";
         var thumb = '<div class="thumbnail"><div class="cover">';
-        if (release.thumb) {
-            thumb += '<img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
-        }
+        thumb += '<img id="'+ pic +'" src=' + release.thumb +' class="thumb">';
         thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
         return thumb;
     }
