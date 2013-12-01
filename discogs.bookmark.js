@@ -7,9 +7,11 @@ javascript:(function() {
 
     script_tag.onload = function() {    window.jQuery.noConflict();
         var releases = [];
-        $('span.br_release_link a, td.hl a:not(.mr_toggler)').each(function(i, r) {
+        $('span.br_release_link a, td.hl a:not(.mr_toggler), td h4 a:not(.mr_toggler):last-child').each(function(i, r) {
             var release = $(r).attr('href').split('/');
-            releases.push(release[release.length-1]);
+            if (release && releases.indexOf(release) == -1) {
+                releases.push(release[release.length-1]);
+            }
         });
 
         window.open(url + releases.join('|'), '_blank');
