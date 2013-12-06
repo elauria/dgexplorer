@@ -1,10 +1,18 @@
 $(function() {
-    var releaseIDs = [2179932, 193966, 124884];
+    var releaseIDs = [];
+    var mainReleaseIDs = [];
     var releases = [];
     var notFound = [];
     var allVideos = [];
     var videoBatches = [];
     var releasesWithoutVideo = [];
+
+    getParameterByName = function (name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
 
     getOneRelease = function(rid, cb) {
         $.ajax({
@@ -24,6 +32,27 @@ $(function() {
                 cb(); }
         });
     };
+
+    getOneMaster = function(rid, cb) {
+        $.ajax({
+            url: "http://api.discogs.com/master/"+rid,
+            success: function(data) {
+                if (data && data.resp && data.resp.master) {
+                    mrid = data.resp.master.main_release.toString();
+                    if (mainReleaseIDs.indexOf(mrid) == -1) {
+                        mainReleaseIDs.push(mrid);
+                    }
+                    return cb();
+                }
+                notFound.push("master-"+rid);
+                cb();
+            },
+            error: function(err) {
+                console.log('error', err.error());
+                cb(); }
+        });
+
+    }
 
     getAllReleases = function(releaseIds, cb) {
         async.each(releaseIds, getOneRelease, function(err, result) {
@@ -54,7 +83,7 @@ $(function() {
     splitVideoIds = function(allVideos) {
         var videos = [];
         _.each(allVideos, function (id, i) {
-            var b = Math.floor(i/20);
+            var b = Math.floor(i/50);
             if (!videos[b]) { videos[b] = []; };
             videos[b].push(id);
         });
@@ -79,8 +108,10 @@ $(function() {
     }
 
     genThumbnail = function(release) {
-        var thumb = '<div><img id="'+ release.id +'" src=' + release.thumb +' class="thumb">';
-        thumb += '<div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div>';
+        var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
+        var thumb = '<div class="thumbnail"><div class="cover">';
+        thumb += '<img id="'+ release.id +'" src=' + cover +' class="thumb">';
+        thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
         return thumb;
     }
 
@@ -139,13 +170,27 @@ $(function() {
         });
     }
 
+    getReleasesFromMasters = function(masterIDs, cb) {
+        async.each(masterIDs, getOneMaster, function(err) {
+            if (err) { throw err };
+            cb();
+        });
+    }
+
     main = function() {
-        getAllReleases(releaseIDs, function() {
-            getAllVideos(releases);
-            videoBatches = splitVideoIds(allVideos);
-            attachIFrames(videoBatches);
-            attachThumbs(releasesWithoutVideo);
-            attachHandlers();
+	    releaseIDs = getParameterByName("releases").split('|');
+        masterIDs = getParameterByName("masters").split('|');
+        getReleasesFromMasters(masterIDs, function() {
+            _.each(mainReleaseIDs, function(mrid) {
+                if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
+            });
+            getAllReleases(releaseIDs, function() {
+                getAllVideos(releases);
+                videoBatches = splitVideoIds(allVideos);
+                attachIFrames(videoBatches);
+                attachThumbs(releasesWithoutVideo);
+                attachHandlers();
+            });
         });
     }
 
