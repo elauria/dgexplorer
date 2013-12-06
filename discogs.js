@@ -1,5 +1,6 @@
 $(function() {
     var releaseIDs = [];
+    var mainReleaseIDs = [];
     var releases = [];
     var notFound = [];
     var allVideos = [];
@@ -31,6 +32,27 @@ $(function() {
                 cb(); }
         });
     };
+
+    getOneMaster = function(rid, cb) {
+        $.ajax({
+            url: "http://api.discogs.com/master/"+rid,
+            success: function(data) {
+                if (data && data.resp && data.resp.master) {
+                    mrid = data.resp.master.main_release.toString();
+                    if (mainReleaseIDs.indexOf(mrid) == -1) {
+                        mainReleaseIDs.push(mrid);
+                    }
+                    return cb();
+                }
+                notFound.push("master-"+rid);
+                cb();
+            },
+            error: function(err) {
+                console.log('error', err.error());
+                cb(); }
+        });
+
+    }
 
     getAllReleases = function(releaseIds, cb) {
         async.each(releaseIds, getOneRelease, function(err, result) {
@@ -148,14 +170,27 @@ $(function() {
         });
     }
 
+    getReleasesFromMasters = function(masterIDs, cb) {
+        async.each(masterIDs, getOneMaster, function(err) {
+            if (err) { throw err };
+            cb();
+        });
+    }
+
     main = function() {
-	releaseIDs = getParameterByName("ids").split('|');
-        getAllReleases(releaseIDs, function() {
-            getAllVideos(releases);
-            videoBatches = splitVideoIds(allVideos);
-            attachIFrames(videoBatches);
-            attachThumbs(releasesWithoutVideo);
-            attachHandlers();
+	    releaseIDs = getParameterByName("releases").split('|');
+        masterIDs = getParameterByName("masters").split('|');
+        getReleasesFromMasters(masterIDs, function() {
+            _.each(mainReleaseIDs, function(mrid) {
+                if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
+            });
+            getAllReleases(releaseIDs, function() {
+                getAllVideos(releases);
+                videoBatches = splitVideoIds(allVideos);
+                attachIFrames(videoBatches);
+                attachThumbs(releasesWithoutVideo);
+                attachHandlers();
+            });
         });
     }
 
