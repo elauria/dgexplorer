@@ -19,8 +19,12 @@ javascript:(function() {
             }
         });
 
-        url += "&releases=" + releases.join('|');
-        url += "&masters=" + masters.join('|');
-        window.open(url, '_blank');
+        if (releases.length) { url += "&releases=" + releases.join('|'); };
+        if (masters.length) { url += "&masters=" + masters.join('|'); };
+        if (url) {
+            window.open(url, '_blank');
+        } esle {
+            alert('no releases found');
+        }
     };
 })();
