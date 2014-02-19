@@ -38,6 +38,7 @@ $(function() {
             url: "http://api.discogs.com/master/"+rid,
             success: function(data) {
                 if (data && data.resp && data.resp.master) {
+                    console.log(data.resp.master);
                     mrid = data.resp.master.main_release.toString();
                     if (mainReleaseIDs.indexOf(mrid) == -1) {
                         mainReleaseIDs.push(mrid);
