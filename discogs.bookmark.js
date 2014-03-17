@@ -1,5 +1,6 @@
 javascript:(function() {
-    var url = "http://elauria.github.io/dgexplorer/index.html?";
+    //var url = "http://elauria.github.io/dgexplorer/index.html?";
+    var url = "file:///Users/elauria/Code/dgexplorer/index.html";
     var script_tag = document.createElement('script');
     script_tag.setAttribute("type", "text/javascript");
     script_tag.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js");
@@ -21,10 +22,6 @@ javascript:(function() {
 
         if (releases.length) { url += "&releases=" + releases.join('|'); };
         if (masters.length) { url += "&masters=" + masters.join('|'); };
-        if (url) {
-            window.open(url, '_blank');
-        } esle {
-            alert('no releases found');
-        }
+        window.open(url, '_blank');
     };
 })();

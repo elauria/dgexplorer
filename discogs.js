@@ -52,7 +52,6 @@ $(function() {
                 console.log('error', err.error());
                 cb(); }
         });
-
     }
 
     getAllReleases = function(releaseIds, cb) {
@@ -109,7 +108,9 @@ $(function() {
     }
 
     genThumbnail = function(release) {
-        var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
+        //FIXME Oauth required to get thumbnails
+        //var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
+        var cover = "http://s.pixogs.com/images/record150.png";
         var thumb = '<div class="thumbnail"><div class="cover">';
         thumb += '<img id="'+ release.id +'" src=' + cover +' class="thumb">';
         thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
@@ -151,7 +152,6 @@ $(function() {
             }
         });
         return tracks;
-
     }
 
     genGoogleLinks = function(tracks) {
