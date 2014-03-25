@@ -34,11 +34,11 @@ $(function() {
     };
 
     getOneMaster = function(rid, cb) {
+        if (!rid) { return cb(); }
         $.ajax({
             url: "http://api.discogs.com/master/"+rid,
             success: function(data) {
                 if (data && data.resp && data.resp.master) {
-                    console.log(data.resp.master);
                     mrid = data.resp.master.main_release.toString();
                     if (mainReleaseIDs.indexOf(mrid) == -1) {
                         mainReleaseIDs.push(mrid);
@@ -179,7 +179,7 @@ $(function() {
     }
 
     main = function() {
-	    releaseIDs = getParameterByName("releases").split('|');
+        releaseIDs = getParameterByName("releases").split('|');
         masterIDs = getParameterByName("masters").split('|');
         getReleasesFromMasters(masterIDs, function() {
             _.each(mainReleaseIDs, function(mrid) {
