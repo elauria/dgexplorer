@@ -29,14 +29,25 @@ javascript: (function () {
         });
     };
     window.mplayer.next = function () {
-        if (window.mplayer.head < window.mplayer.playlist.length) window.mplayer.head += 1;
-        window.mplayer.stop();
-        window.mplayer.play();
+        if (window.mplayer.head < window.mplayer.playlist.length) {
+            window.mplayer.head += 1;
+            window.mplayer.stop();
+            window.mplayer.play();
+        }
     };
     window.mplayer.prev = function () {
-        if (window.mplayer.head > 0) window.mplayer.head -= 1;
-        window.mplayer.stop();
-        window.mplayer.play();
+        if (window.mplayer.head > 0) {
+            window.mplayer.head -= 1;
+            window.mplayer.stop();
+            window.mplayer.play();
+        }
+    };
+    window.mplayer.jump = function () {
+        if (window.mplayer.head < window.mplayer.playlist.length -5) {
+            window.mplayer.head += 5;
+            window.mplayer.stop();
+            window.mplayer.play();
+        }
     };
     window.mplayer.buy = function () {
         var buy = window.jQuery('.icon-shopping-cart', window.jQuery(window.mplayer.playlist[window.mplayer.head]).parents('.textblock'));
