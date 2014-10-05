@@ -22,10 +22,10 @@ $(function() {
                     if (releases.indexOf(data.resp.release.id) == -1) {
                         releases.push(data.resp.release);
                     }
-                    return setTimeout(function() { cb(); }, 1000);
+                    return setTimeout(function() { cb(); }, 1200);
                 }
                 notFound.push(rid);
-                return setTimeout(function() { cb(); }, 1000);
+                return setTimeout(function() { cb(); }, 1200);
             },
             error: function(err) {
                 console.log('error', err.error());
@@ -43,10 +43,10 @@ $(function() {
                     if (mainReleaseIDs.indexOf(mrid) == -1) {
                         mainReleaseIDs.push(mrid);
                     }
-                    return setTimeout(function() { cb(); }, 1000);
+                    return setTimeout(function() { cb(); }, 1200);
                 }
                 notFound.push("master-"+rid);
-                setTimeout(function() { cb(); }, 1000);
+                setTimeout(function() { cb(); }, 1200);
             },
             error: function(err) {
                 console.log('error', err.error());
