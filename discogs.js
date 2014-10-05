@@ -55,7 +55,7 @@ $(function() {
     }
 
     getAllReleases = function(releaseIds, cb) {
-        async.each(releaseIds, getOneRelease, function(err, result) {
+        async.eachSeries(releaseIds, getOneRelease, function(err, result) {
             if (err) { throw err };
             setTimeout(function() { cb(); }, 2000);
         });
@@ -172,9 +172,9 @@ $(function() {
     }
 
     getReleasesFromMasters = function(masterIDs, cb) {
-        async.each(masterIDs, getOneMaster, function(err) {
+        async.eachSeries(masterIDs, getOneMaster, function(err) {
             if (err) { throw err };
-            cb();
+            return setTimeout(function() { cb(); });
         });
     }
 
