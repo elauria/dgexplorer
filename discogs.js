@@ -59,6 +59,15 @@ $(function() {
     getAllReleases = function(releaseIds, cb) {
         async.eachSeries(releaseIds, getOneRelease, function(err, result) {
             if (err) { throw err };
+            console.log('got all releases');
+            cb();
+        });
+    }
+
+    getAllMasters = function(masterIDs, cb) {
+        async.eachSeries(masterIDs, getOneMaster, function(err) {
+            if (err) { throw err };
+            console.log('got all masters');
             cb();
         });
     }
@@ -172,18 +181,10 @@ $(function() {
             $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
     }
-
-    getReleasesFromMasters = function(masterIDs, cb) {
-        async.eachSeries(masterIDs, getOneMaster, function(err) {
-            if (err) { throw err };
-            cb();
-        });
-    }
-
     main = function() {
         releaseIDs = getParameterByName("releases").split('|');
         masterIDs = getParameterByName("masters").split('|');
-        getReleasesFromMasters(masterIDs, function() {
+        getAllMasters(masterIDs, function() {
             _.each(mainReleaseIDs, function(mrid) {
                 if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
             });
