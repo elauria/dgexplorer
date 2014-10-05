@@ -98,6 +98,7 @@ $(function() {
     }
 
     attachIFrames = function(videoBatches) {
+        $('#videos').html('');
         _.each(videoBatches, function(batch, i) {
             var iframe = genIframe(batch, i);
             $('#videos').append(iframe);
