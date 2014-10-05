@@ -107,7 +107,7 @@ $(function() {
     genThumbnail = function(release) {
         //FIXME Oauth required to get thumbnails
         //var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
-        var cover = "http://s.pixogs.com/images/record150.png";
+        var cover = "http://s.pixogs.com/images/default-release.png";
         var thumb = '<div class="thumbnail"><div class="cover">';
         thumb += '<img id="'+ release.id +'" src=' + cover +' class="thumb">';
         thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
