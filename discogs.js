@@ -17,11 +17,8 @@ $(function() {
     getOneRelease = function(rid, cb) {
         $.ajax({
             url: "http://api.discogs.com/releases/"+rid,
-            success: function(data) {
-                if (data && data.resp && data.resp.release) {
-                    if (releases.indexOf(data.resp.release.id) == -1) {
-                        releases.push(data.resp.release);
-                    }
+            success: function(release) {
+                    releases.push(release);
                     return setTimeout(function() { cb(); }, 2000);
                 }
                 notFound.push(rid);
@@ -38,12 +35,8 @@ $(function() {
         if (!rid) { return cb(); }
         $.ajax({
             url: "http://api.discogs.com/masters/"+rid,
-            success: function(data) {
-                if (data && data.resp && data.resp.master) {
-                    mrid = data.resp.master.main_release.toString();
-                    if (mainReleaseIDs.indexOf(mrid) == -1) {
-                        mainReleaseIDs.push(mrid);
-                    }
+            success: function(master) {
+                    releases.push(master);
                     return setTimeout(function() { cb(); }, 2000);
                 }
                 notFound.push("master-"+rid);
