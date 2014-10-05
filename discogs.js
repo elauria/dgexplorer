@@ -72,6 +72,13 @@ $(function() {
         });
     }
 
+    getAllVideos = function(releases) {
+        var videos = [];
+        _.each(releases, function(release) {
+            getReleaseVideos(release);
+        });
+    }
+
     getReleaseVideos = function(release) {
         if (!release.videos) { releasesWithoutVideo.push(release); }
         _.each(release.videos, function (video, i) {
@@ -81,14 +88,6 @@ $(function() {
                 allVideos.push(id);
             }
         });
-    }
-
-    getAllVideos = function(releases) {
-        var videos = [];
-        _.each(releases, function(release) {
-            getReleaseVideos(release);
-        });
-        return allVideos;
     }
 
     splitVideoIds = function(allVideos) {
@@ -191,7 +190,9 @@ $(function() {
                 });
                 setTimeout(function() {
                     getAllReleases(releaseIDs, function() {
+                        console.log('releases', releases);
                         getAllVideos(releases);
+                        console.log('videos', allVideos);
                         videoBatches = splitVideoIds(allVideos);
                         attachIFrames(videoBatches);
                         attachThumbs(releasesWithoutVideo);
