@@ -174,7 +174,7 @@ $(function() {
     getReleasesFromMasters = function(masterIDs, cb) {
         async.eachSeries(masterIDs, getOneMaster, function(err) {
             if (err) { throw err };
-            return setTimeout(function() { cb(); });
+            return setTimeout(function() { cb(); }, 2000);
         });
     }
 
