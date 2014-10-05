@@ -16,7 +16,7 @@ $(function() {
 
     getOneRelease = function(rid, cb) {
         $.ajax({
-            url: "http://api.discogs.com/release/"+rid,
+            url: "http://api.discogs.com/releases/"+rid,
             success: function(data) {
                 if (data && data.resp && data.resp.release) {
                     if (releases.indexOf(data.resp.release.id) == -1) {
@@ -36,7 +36,7 @@ $(function() {
     getOneMaster = function(rid, cb) {
         if (!rid) { return cb(); }
         $.ajax({
-            url: "http://api.discogs.com/master/"+rid,
+            url: "http://api.discogs.com/masters/"+rid,
             success: function(data) {
                 if (data && data.resp && data.resp.master) {
                     mrid = data.resp.master.main_release.toString();
