@@ -18,10 +18,7 @@ $(function() {
         $.ajax({
             url: "http://api.discogs.com/releases/"+rid,
             success: function(release) {
-                    releases.push(release);
-                    return setTimeout(function() { cb(); }, 2000);
-                }
-                notFound.push(rid);
+                releases.push(release);
                 return setTimeout(function() { cb(); }, 2000);
             },
             error: function(err) {
@@ -36,11 +33,8 @@ $(function() {
         $.ajax({
             url: "http://api.discogs.com/masters/"+rid,
             success: function(master) {
-                    releases.push(master);
-                    return setTimeout(function() { cb(); }, 2000);
-                }
-                notFound.push("master-"+rid);
-                setTimeout(function() { cb(); }, 2000);
+                releases.push(master);
+                return setTimeout(function() { cb(); }, 2000);
             },
             error: function(err) {
                 console.warn('error', err.error());
