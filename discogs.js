@@ -28,8 +28,9 @@ $(function() {
                 return setTimeout(function() { cb(); }, 1200);
             },
             error: function(err) {
-                console.log('error', err.error());
-                cb(); }
+                console.warn('error', err.error());
+                setTimeout(function() { cb(); }, 1200);
+            }
         });
     };
 
@@ -49,8 +50,9 @@ $(function() {
                 setTimeout(function() { cb(); }, 1200);
             },
             error: function(err) {
-                console.log('error', err.error());
-                cb(); }
+                console.warn('error', err.error());
+                setTimeout(function() { cb(); }, 1200);
+            }
         });
     }
 
