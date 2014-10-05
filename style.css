@@ -16,11 +16,10 @@ a {
     float: left;
 }
 
-.thumb {
+.thumbnail {
     float: left;
     margin: 10px;
-    height: 150px;
-    width: 150px;
+    height: 300px;
 }
 
 .cover {
@@ -37,4 +36,9 @@ a {
     height: 150px;
     overflow-y: auto;
     white-space: normal;
+}
+
+.thumb {
+    width: 150px;
+    height: 150px;
 }
