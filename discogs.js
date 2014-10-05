@@ -184,16 +184,20 @@ $(function() {
     main = function() {
         releaseIDs = getParameterByName("releases").split('|');
         masterIDs = getParameterByName("masters").split('|');
-        getAllMasters(masterIDs, function() {
-            _.each(mainReleaseIDs, function(mrid) {
-                if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
-            });
-            getAllReleases(releaseIDs, function() {
-                getAllVideos(releases);
-                videoBatches = splitVideoIds(allVideos);
-                attachIFrames(videoBatches);
-                attachThumbs(releasesWithoutVideo);
-                attachHandlers();
+        setTimeout(function() {
+            getAllMasters(masterIDs, function() {
+                _.each(mainReleaseIDs, function(mrid) {
+                    if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
+                });
+                setTimeout(function() {
+                    getAllReleases(releaseIDs, function() {
+                        getAllVideos(releases);
+                        videoBatches = splitVideoIds(allVideos);
+                        attachIFrames(videoBatches);
+                        attachThumbs(releasesWithoutVideo);
+                        attachHandlers();
+                    });
+                }, 2000);
             });
         });
     }
