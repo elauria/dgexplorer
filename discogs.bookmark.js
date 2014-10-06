@@ -8,7 +8,7 @@ javascript:(function() {
     script_tag.onload = function() {    window.jQuery.noConflict();
         var releases = [];
         var masters = [];
-        $('td.title>a:not(.mr_toggler), span.br_release_link a').each(function(i, r) {
+        $('td.title>a:not(.mr_toggler), td.item_description > a.item_release_link, span.br_release_link a').each(function(i, r) {
             var release = $(r).attr('href').split('/');
             var type = release[release.length-2];
             if (release && type === "release" && releases.indexOf(release) == -1) {
