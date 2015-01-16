@@ -166,7 +166,10 @@ $(function() {
         //var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
         var cover = "http://s.pixogs.com/images/default-release.png";
         var thumb = '<div class="thumbnail"><div class="cover">';
+        var artist = release.artists[0].name;
+        var title = artist + '-' + release.title;
         thumb += '<img id="'+ release.id +'" src=' + cover +' class="thumb">';
+        thumb += '<a class="title" href="http://www.google.com/search?q=' + title + '">' + title + '</a>';
         thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
         return thumb;
     }

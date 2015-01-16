@@ -44,6 +44,20 @@ a:visited {
 .cover {
     width: 150px;
     min-height: 150px;
+    position: relative;
+}
+
+.cover a.title {
+    color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+.cover a:visited {
+    color: #666;
 }
 
 #thumbnails {
@@ -79,13 +93,15 @@ a:visited {
     border-bottom: 1px solid #333;
     color: #eaeed3;
     opacity: 0.8;
+    overflow: hidden;
 }
 
 .menu span#title {
-    font-size: 20px;
+    font-size: 64px;
     font-weight: 700;
     line-height: 45px;
     margin-left: 15px;
+    color: red;
 }
 
 .menu .controls {
