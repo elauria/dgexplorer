@@ -1,0 +1,111 @@
+html, body {
+    background: #333;
+    background-image: url('../images/bg_militar.jpg');
+    background-repeat: repeat;
+    font-family: "Helvetica";
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #eee;
+    margin-bottom: 5px;
+    float: left;
+}
+
+#videos {
+    margin-top: 45px;
+    width: 660px;
+    float: left;
+    padding: 20px;
+    color: #fff;
+}
+
+#videos span.warning {
+    color: #ccc;
+    margin-left: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.thumbnail {
+    float: left;
+    margin: 10px;
+    height: 300px;
+}
+
+.cover {
+    width: 150px;
+    min-height: 150px;
+}
+
+#thumbnails {
+    width: 100%;
+}
+
+#thumbnails #links {
+    width: 150px;
+    height: 150px;
+    overflow-y: auto;
+    white-space: normal;
+}
+
+.thumb {
+    width: 150px;
+    height: 150px;
+}
+
+.loading {
+    width: 100px;
+    height: 100px;
+}
+
+.menu {
+    position: fixed;
+    width: 100%;
+    height: 45px;
+    background: #252910;
+    border-bottom: 1px solid #333;
+    color: #eaeed3;
+    opacity: 0.8;
+}
+
+.menu span#title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 45px;
+    margin-left: 15px;
+}
+
+.menu .controls {
+    float: right;
+    width: 300px;
+    padding: 10px;
+    margin: 0;
+    line-height: 25px;
+    font-size: 20px;
+    text-align: right;
+}
+
+.menu .controls i {
+    margin-left: 5px;
+}
+
+.btn {
+    background: #a5b646;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #7e8c36;
+    font-size: 14px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.active {
+    color: #659D32;
+}

@@ -6,15 +6,46 @@ $(function() {
     var allVideos = [];
     var videoBatches = [];
     var releasesWithoutVideo = [];
+    var watchedIDs = [];
+    var hideWatched= false;
 
-    getParameterByName = function (name) {
+    var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    getOneRelease = function(rid, cb) {
+    var updateQueryString = function (key, value, url) {
+        if (!url) url = window.location.href;
+        var re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi"), hash;
+
+        if (re.test(url)) {
+            if (typeof value !== 'undefined' && value !== null)
+                return url.replace(re, '$1' + key + "=" + value + '$2$3');
+            else {
+                hash = url.split('#');
+                url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
+                if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                    url += '#' + hash[1];
+                return url;
+            }
+        }
+        else {
+            if (typeof value !== 'undefined' && value !== null) {
+                var separator = url.indexOf('?') !== -1 ? '&' : '?';
+                hash = url.split('#');
+                url = hash[0] + separator + key + '=' + value;
+                if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                    url += '#' + hash[1];
+                return url;
+            }
+            else
+                return url;
+        }
+    }
+
+    var getOneRelease = function(rid, cb) {
         $.ajax({
             url: "http://api.discogs.com/releases/"+rid,
             success: function(release) {
@@ -28,7 +59,7 @@ $(function() {
         });
     };
 
-    getOneMaster = function(rid, cb) {
+    var getOneMaster = function(rid, cb) {
         if (!rid) { return cb(); }
         $.ajax({
             url: "http://api.discogs.com/masters/"+rid,
@@ -43,7 +74,7 @@ $(function() {
         });
     }
 
-    getAllReleases = function(releaseIds, cb) {
+    var getAllReleases = function(releaseIds, cb) {
         async.eachSeries(releaseIds, getOneRelease, function(err, result) {
             if (err) { throw err };
             console.log('got all releases');
@@ -51,7 +82,7 @@ $(function() {
         });
     }
 
-    getAllMasters = function(masterIDs, cb) {
+    var getAllMasters = function(masterIDs, cb) {
         async.eachSeries(masterIDs, getOneMaster, function(err) {
             if (err) { throw err };
             console.log('got all masters');
@@ -59,25 +90,26 @@ $(function() {
         });
     }
 
-    getAllVideos = function(releases) {
+    var getAllVideos = function(releases) {
         var videos = [];
         _.each(releases, function(release) {
             getReleaseVideos(release);
         });
     }
 
-    getReleaseVideos = function(release) {
+    var getReleaseVideos = function(release) {
         if (!release.videos) { releasesWithoutVideo.push(release); }
         _.each(release.videos, function (video, i) {
             var uri = video.uri;
             var id = uri.split('http://www.youtube.com/watch?v=')[1];
             if (allVideos.indexOf(id) == -1) {
+                if (hideWatched && watchedIDs.indexOf(id) !== -1) return;
                 allVideos.push(id);
             }
         });
     }
 
-    splitVideoIds = function(allVideos) {
+    var splitVideoIds = function(allVideos) {
         var videos = [];
         _.each(allVideos, function (id, i) {
             var b = Math.floor(i/50);
@@ -87,7 +119,7 @@ $(function() {
         return videos;
     }
 
-    genIframe = function(batch, i) {
+    var genIframe = function(batch, i) {
         var firstVideo = batch.splice(0, 1);
         var iframe = '<iframe id="ytplayer'+i+'" type="text/html"';
         iframe += ' width="640" height="390"';
@@ -97,15 +129,18 @@ $(function() {
         return iframe;
     }
 
-    attachIFrames = function(videoBatches) {
+    var attachIFrames = function(videoBatches) {
         $('#videos').html('');
+        if (videoBatches.length === 0) {
+            return $('#videos').html('<span class="warning">No videos to show :-(</span>');
+        }
         _.each(videoBatches, function(batch, i) {
             var iframe = genIframe(batch, i);
             $('#videos').append(iframe);
         });
     }
 
-    genThumbnail = function(release) {
+    var genThumbnail = function(release) {
         //FIXME Oauth required to get thumbnails
         //var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
         var cover = "http://s.pixogs.com/images/default-release.png";
@@ -115,14 +150,14 @@ $(function() {
         return thumb;
     }
 
-    attachThumbs = function(releases) {
+    var attachThumbs = function(releases) {
         _.each(releases, function(release) {
             var thumb = genThumbnail(release);
             $('#thumbnails').append(thumb);
         });
     }
 
-    getReleaseById = function(id) {
+    var getReleaseById = function(id) {
         var r = null;
         _.each(releases, function(release) {
             if (release.id == id) { r = release; };
@@ -130,7 +165,7 @@ $(function() {
         return r;
     }
 
-    genTracklist = function(id) {
+    var genTracklist = function(id) {
         var release = getReleaseById(id);
         var artistNames = [];
         var tracks = [];
@@ -152,7 +187,7 @@ $(function() {
         return tracks;
     }
 
-    genGoogleLinks = function(tracks) {
+    var genGoogleLinks = function(tracks) {
         var html = '';
         _.each(tracks, function (track) {
             var url = 'http://www.google.com/search?q=' + track;
@@ -161,16 +196,56 @@ $(function() {
         return html;
     }
 
-    attachHandlers = function() {
+    var attachHandlers = function() {
         $('img.thumb').click(function(e) {
             var $e = $(e.currentTarget);
             var id = $e.attr('id');
             $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
     }
-    main = function() {
+
+    var markAsWatched = function() {
+        var watched = JSON.parse(localStorage.getItem("watched")) || {};
+        watchedIDs = _.uniq(watchedIDs.concat(allVideos));
+        _.each(watchedIDs, function(id) {
+            if (typeof watched[id] === 'undefined') {
+                watched[id] = {
+                    date: new Date()
+                };
+            } else if (!hideWatched) {
+                watched[id].date = new Date();
+            }
+        });
+        localStorage.setItem('watched', JSON.stringify(watched));
+        console.log('Watched videos saved in localStorage');
+    }
+
+    var toggleHideWatched = function() {
+        hideWatched = !hideWatched;
+        window.location = updateQueryString('hideWatched', hideWatched);
+    }
+
+    var setHandlers = function() {
+        $('.menu .controls #mark').click(function() {
+            markAsWatched();
+        });
+
+        $('.menu .controls #hide-watched').click(function() {
+            toggleHideWatched();
+        });
+
+        if (hideWatched) {
+            $('.menu .controls #hide-watched').addClass('active');
+        }
+    }
+
+    var main = function() {
+        watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
+        console.log('No. of watched videos:', watchedIDs.length);
+        hideWatched = getParameterByName("hideWatched") == 'true' ? true : false;
         releaseIDs = getParameterByName("releases").split('|');
         masterIDs = getParameterByName("masters").split('|');
+        setHandlers();
         setTimeout(function() {
             getAllMasters(masterIDs, function() {
                 _.each(mainReleaseIDs, function(mrid) {

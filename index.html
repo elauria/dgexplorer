@@ -2,14 +2,21 @@
 <html>
     <head>
         <title>Discogs Explorer</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/font-awesome.css">
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script type="text/javascript" src="lodash.min.js"></script>
         <script type="text/javascript" src="async.js"></script>
         <script type="text/javascript" src="discogs.js"></script>
     </head>
     <body>
-        <h1></h1>
+        <div class="menu">
+            <span id="title">Digger v0.2</span>
+            <div class="controls">
+                <i id="mark" class="fa fa-check clickable" title="Mark all videos as watched"></i>
+                <i id="hide-watched" class="fa fa-eye clickable" title="Hide watched videos"></i>
+            </div>
+        </div>
         <div id="videos"><img class="loading" src="images/loading.gif" /></div>
         <div id="thumbnails"></div>
 
@@ -21,6 +28,11 @@
             })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
             ga('create', 'UA-28803252-2', 'auto');
             ga('send', 'pageview');
+        </script>
+
+        <!-- JQuery Stuff -->
+        <script>
+
         </script>
 
     </body>
