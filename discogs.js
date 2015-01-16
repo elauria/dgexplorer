@@ -1,5 +1,6 @@
 $(function() {
     var releaseIDs = [];
+    var masterIDs = [];
     var mainReleaseIDs = [];
     var releases = [];
     var notFound = [];
@@ -8,6 +9,8 @@ $(function() {
     var releasesWithoutVideo = [];
     var watchedIDs = [];
     var hideWatched= false;
+    var loadingProgress = 0;
+    var totalToLoad = 0;
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -50,11 +53,19 @@ $(function() {
             url: "http://api.discogs.com/releases/"+rid,
             success: function(release) {
                 releases.push(release);
-                return setTimeout(function() { cb(); }, 2000);
+                return setTimeout(function() {
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }, 2000);
             },
             error: function(err) {
                 console.warn('error', err.error());
-                setTimeout(function() { cb(); }, 2000);
+                setTimeout(function() {
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }, 2000);
             }
         });
     };
@@ -65,11 +76,21 @@ $(function() {
             url: "http://api.discogs.com/masters/"+rid,
             success: function(master) {
                 releases.push(master);
-                return setTimeout(function() { cb(); }, 2000);
+                loadingProgress++;
+                setLoadingBar();
+                return setTimeout(function() {
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }, 2000);
             },
             error: function(err) {
                 console.warn('error', err.error());
-                setTimeout(function() { cb(); }, 2000);
+                setTimeout(function() {
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }, 2000);
             }
         });
     }
@@ -202,6 +223,14 @@ $(function() {
             var id = $e.attr('id');
             $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
+
+        $('.menu .controls #mark').click(function() {
+            markAsWatched();
+        });
+
+        $('.menu .controls #hide-watched').click(function() {
+            toggleHideWatched();
+        });
     }
 
     var markAsWatched = function() {
@@ -225,32 +254,32 @@ $(function() {
         window.location = updateQueryString('hideWatched', hideWatched);
     }
 
-    var setHandlers = function() {
-        $('.menu .controls #mark').click(function() {
-            markAsWatched();
-        });
-
-        $('.menu .controls #hide-watched').click(function() {
-            toggleHideWatched();
-        });
+    var setControls = function() {
 
         if (hideWatched) {
             $('.menu .controls #hide-watched').addClass('active');
         }
     }
 
+    var setLoadingBar = function() {
+        console.log(loadingProgress, totalToLoad);
+        $('.loading').width(Math.round(loadingProgress/totalToLoad * 100) + '%');
+    }
+
     var main = function() {
         watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
         console.log('No. of watched videos:', watchedIDs.length);
         hideWatched = getParameterByName("hideWatched") == 'true' ? true : false;
-        releaseIDs = getParameterByName("releases").split('|');
-        masterIDs = getParameterByName("masters").split('|');
-        setHandlers();
+        if (getParameterByName("releases")) {
+            releaseIDs = getParameterByName("releases").split('|');
+        }
+        if (getParameterByName("masters")) {
+            masterIDs = getParameterByName("masters").split('|');
+        }
+        totalToLoad = releaseIDs.length + masterIDs.length;
+        setControls();
         setTimeout(function() {
             getAllMasters(masterIDs, function() {
-                _.each(mainReleaseIDs, function(mrid) {
-                    if (releaseIDs.indexOf(mrid) == -1) { releaseIDs.push(mrid); }
-                });
                 setTimeout(function() {
                     getAllReleases(releaseIDs, function() {
                         console.log('releases', releases);
@@ -260,6 +289,7 @@ $(function() {
                         attachIFrames(videoBatches);
                         attachThumbs(releasesWithoutVideo);
                         attachHandlers();
+                        $('.loading').hide();
                     });
                 }, 2000);
             });

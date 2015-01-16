@@ -44,6 +44,7 @@ a {
 
 #thumbnails {
     width: 100%;
+    padding-top: 55px;
 }
 
 #thumbnails #links {
@@ -58,9 +59,12 @@ a {
     height: 150px;
 }
 
-.loading {
-    width: 100px;
-    height: 100px;
+.loading{
+    width: 1%;
+    position: fixed;
+    top: 45px;
+    height: 3px;
+    background: red;
 }
 
 .menu {
