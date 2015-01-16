@@ -223,14 +223,6 @@ $(function() {
             var id = $e.attr('id');
             $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
-
-        $('.menu .controls #mark').click(function() {
-            markAsWatched();
-        });
-
-        $('.menu .controls #hide-watched').click(function() {
-            toggleHideWatched();
-        });
     }
 
     var markAsWatched = function() {
@@ -251,6 +243,7 @@ $(function() {
 
     var toggleHideWatched = function() {
         hideWatched = !hideWatched;
+        console.log('hideWatched!', hideWatched)
         window.location = updateQueryString('hideWatched', hideWatched);
     }
 
@@ -259,6 +252,14 @@ $(function() {
         if (hideWatched) {
             $('.menu .controls #hide-watched').addClass('active');
         }
+
+        $('.menu .controls #mark').click(function() {
+            markAsWatched();
+        });
+
+        $('.menu .controls #hide-watched').click(function() {
+            toggleHideWatched();
+        });
     }
 
     var setLoadingBar = function() {
