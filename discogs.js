@@ -262,7 +262,6 @@ $(function() {
     }
 
     var setLoadingBar = function() {
-        console.log(loadingProgress, totalToLoad);
         $('.loading').width(Math.round(loadingProgress/totalToLoad * 100) + '%');
     }
 
