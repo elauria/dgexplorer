@@ -53,19 +53,15 @@ $(function() {
             url: "http://api.discogs.com/releases/"+rid,
             success: function(release) {
                 releases.push(release);
-                return setTimeout(function() {
-                    loadingProgress++;
-                    setLoadingBar();
-                    cb();
-                }, 2000);
+                loadingProgress++;
+                setLoadingBar();
+                cb();
             },
             error: function(err) {
                 console.warn('error', err.error());
-                setTimeout(function() {
-                    loadingProgress++;
-                    setLoadingBar();
-                    cb();
-                }, 2000);
+                loadingProgress++;
+                setLoadingBar();
+                cb();
             }
         });
     };
@@ -78,19 +74,15 @@ $(function() {
                 releases.push(master);
                 loadingProgress++;
                 setLoadingBar();
-                return setTimeout(function() {
-                    loadingProgress++;
-                    setLoadingBar();
-                    cb();
-                }, 2000);
+                loadingProgress++;
+                setLoadingBar();
+                cb();
             },
             error: function(err) {
                 console.warn('error', err.error());
-                setTimeout(function() {
-                    loadingProgress++;
-                    setLoadingBar();
-                    cb();
-                }, 2000);
+                loadingProgress++;
+                setLoadingBar();
+                cb();
             }
         });
     }
