@@ -206,7 +206,7 @@ $(function() {
     var genGoogleLinks = function(tracks) {
         var html = '';
         _.each(tracks, function (track) {
-            var url = 'http://www.google.com/search?q=' + track;
+            var url = encodeURI('http://www.google.com/search?q=' + track);
             html += '<a href="'+url+'" target="_blank">'+track+'</a>';
         });
         return html;
