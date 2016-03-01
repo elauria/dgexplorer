@@ -136,9 +136,8 @@ $(function() {
         var firstVideo = batch.splice(0, 1);
         var iframe = '<iframe id="ytplayer'+i+'" type="text/html"';
         iframe += ' width="640" height="390"';
-        //iframe += ' src="http://www.youtube.com/v/'+firstVideo;
+        iframe += ' src="http://www.youtube.com/v/'+firstVideo;
         //iframe += '?playlist='+batch.join(',');
-        iframe += ' src="http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com';
         iframe += '" frameborder="0"/></iframe>'
         return iframe;
     }
