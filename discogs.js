@@ -137,6 +137,7 @@ $(function() {
         var iframe = '<iframe id="ytplayer'+i+'" type="text/html"';
         iframe += ' width="640" height="390"';
         iframe += ' src="http://www.youtube.com/v/'+firstVideo;
+        console.log('firstVideo', firstVideo);
         //iframe += '?playlist='+batch.join(',');
         iframe += '" frameborder="0"/></iframe>'
         return iframe;
