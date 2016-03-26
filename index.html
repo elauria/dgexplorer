@@ -8,18 +8,21 @@
         <script type="text/javascript" src="lodash.min.js"></script>
         <script type="text/javascript" src="async.js"></script>
         <script type="text/javascript" src="discogs.js"></script>
+        <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
     </head>
     <body>
         <div class="menu">
-            <span id="title">Digger v0.2</span>
+            <span id="title"><i id="logo" class="fa fa-diamond"></i> Digger</span>
             <div class="controls">
                 <i id="mark" class="fa fa-check clickable" title="Mark all videos as watched"></i>
                 <i id="hide-watched" class="fa fa-eye clickable" title="Hide watched videos"></i>
             </div>
         </div>
         <div class="loading"></div>
-        <div id="videos"></div>
-        <div id="thumbnails"></div>
+        <div class="content">
+            <div id="player"></div>
+            <div id="thumbnails"></div>
+        </div>
 
         <!-- Google Analytics -->
         <script>

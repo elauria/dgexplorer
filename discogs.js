@@ -1,3 +1,5 @@
+var onYouTubeIframeAPIReady = null;
+
 $(function() {
     var releaseIDs = [];
     var masterIDs = [];
@@ -5,7 +7,6 @@ $(function() {
     var releases = [];
     var notFound = [];
     var allVideos = [];
-    var videoBatches = [];
     var releasesWithoutVideo = [];
     var watchedIDs = [];
     var hideWatched= false;
@@ -51,8 +52,10 @@ $(function() {
     var getOneRelease = function(rid, cb) {
         $.ajax({
             url: "http://api.discogs.com/releases/"+rid,
+            jsonp: "callback",
+            dataType: "jsonp",
             success: function(release) {
-                releases.push(release);
+                releases.push(release.data);
                 loadingProgress++;
                 setLoadingBar();
                 cb();
@@ -70,8 +73,10 @@ $(function() {
         if (!rid) { return cb(); }
         $.ajax({
             url: "http://api.discogs.com/masters/"+rid,
+            jsonp: "callback",
+            dataType: "jsonp",
             success: function(master) {
-                releases.push(master);
+                releases.push(master.data);
                 loadingProgress++;
                 setLoadingBar();
                 loadingProgress++;
@@ -114,7 +119,7 @@ $(function() {
         if (!release.videos) { releasesWithoutVideo.push(release); }
         _.each(release.videos, function (video, i) {
             var uri = video.uri;
-            var id = uri.split('http://www.youtube.com/watch?v=')[1];
+            var id = uri.split('https://www.youtube.com/watch?v=')[1];
             if (allVideos.indexOf(id) == -1) {
                 if (hideWatched && watchedIDs.indexOf(id) !== -1) return;
                 allVideos.push(id);
@@ -122,41 +127,10 @@ $(function() {
         });
     }
 
-    var splitVideoIds = function(allVideos) {
-        var videos = [];
-        _.each(allVideos, function (id, i) {
-            var b = Math.floor(i/50);
-            if (!videos[b]) { videos[b] = []; };
-            videos[b].push(id);
-        });
-        return videos;
-    }
-
-    var genIframe = function(batch, i) {
-        var firstVideo = batch.splice(0, 1);
-        var iframe = '<iframe id="ytplayer'+i+'" type="text/html"';
-        iframe += ' width="640" height="390"';
-        iframe += ' src="http://www.youtube.com/embed/' + firstVideo + '?enablejsapi=1&origin=http://discogs.com';
-        //iframe += '?playlist='+batch.join(',');
-        iframe += '" frameborder="0"/></iframe>'
-        return iframe;
-    }
-
-    var attachIFrames = function(videoBatches) {
-        $('#videos').html('');
-        if (videoBatches.length === 0) {
-            return $('#videos').html('<span class="warning">No videos to show :-(</span>');
-        }
-        _.each(videoBatches, function(batch, i) {
-            var iframe = genIframe(batch, i);
-            $('#videos').append(iframe);
-        });
-    }
-
     var genThumbnail = function(release) {
         //FIXME Oauth required to get thumbnails
         //var cover = release.thumb || "http://s.pixogs.com/images/record150.png";
-        var cover = "http://s.pixogs.com/images/default-release.png";
+        var cover = "https://s.discogs.com/images/default-release-cd.png";
         var thumb = '<div class="thumbnail"><div class="cover">';
         var artist = release.artists[0].name;
         var title = artist + '-' + release.title;
@@ -261,6 +235,34 @@ $(function() {
         $('.loading').width(Math.round(loadingProgress/totalToLoad * 100) + '%');
     }
 
+    var player;
+    onYouTubeIframeAPIReady = function() {
+        player = new YT.Player('player', {
+            height: '390',
+            width: '640',
+            videoId: 'M7lc1UVf-VE',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    var done = false;
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+
     var main = function() {
         watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
         console.log('No. of watched videos:', watchedIDs.length);
@@ -273,22 +275,17 @@ $(function() {
         }
         totalToLoad = releaseIDs.length + masterIDs.length;
         setControls();
-        setTimeout(function() {
-            getAllMasters(masterIDs, function() {
-                setTimeout(function() {
-                    getAllReleases(releaseIDs, function() {
-                        console.log('releases', releases);
-                        getAllVideos(releases);
-                        console.log('videos', allVideos);
-                        videoBatches = splitVideoIds(allVideos);
-                        attachIFrames(videoBatches);
-                        attachThumbs(releasesWithoutVideo);
-                        attachHandlers();
-                        $('.loading').hide();
-                    });
-                }, 2000);
+        getAllMasters(masterIDs, function() {
+            getAllReleases(releaseIDs, function() {
+                console.log('releases', releases);
+                getAllVideos(releases);
+                console.log('videos', allVideos);
+                player.cuePlaylist(allVideos);
+                attachThumbs(releasesWithoutVideo);
+                attachHandlers();
+                $('.loading').hide();
             });
-        }, 2000);
+        });
     }
 
     main();
