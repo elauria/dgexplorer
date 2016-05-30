@@ -6,7 +6,7 @@ $(function() {
     var mainReleaseIDs = [];
     var releases = [];
     var notFound = [];
-    var allVideos = [];
+    var allVideos = [ 'M7lc1UVf-VE' ];
     var releasesWithoutVideo = [];
     var watchedIDs = [];
     var hideWatched= false;
@@ -17,8 +17,8 @@ $(function() {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
-        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
 
     var updateQueryString = function (key, value, url) {
         if (!url) url = window.location.href;
@@ -47,7 +47,7 @@ $(function() {
             else
                 return url;
         }
-    }
+    };
 
     var getOneRelease = function(rid, cb) {
         $.ajax({
@@ -90,30 +90,30 @@ $(function() {
                 cb();
             }
         });
-    }
+    };
 
     var getAllReleases = function(releaseIds, cb) {
         async.eachSeries(releaseIds, getOneRelease, function(err, result) {
-            if (err) { throw err };
+            if (err) { throw err; }
             console.log('got all releases');
             cb();
         });
-    }
+    };
 
     var getAllMasters = function(masterIDs, cb) {
         async.eachSeries(masterIDs, getOneMaster, function(err) {
-            if (err) { throw err };
+            if (err) { throw err; }
             console.log('got all masters');
             cb();
         });
-    }
+    };
 
     var getAllVideos = function(releases) {
         var videos = [];
         _.each(releases, function(release) {
             getReleaseVideos(release);
         });
-    }
+    };
 
     var getReleaseVideos = function(release) {
         if (!release.videos) { releasesWithoutVideo.push(release); }
@@ -125,7 +125,7 @@ $(function() {
                 allVideos.push(id);
             }
         });
-    }
+    };
 
     var genThumbnail = function(release) {
         //FIXME Oauth required to get thumbnails
@@ -138,22 +138,22 @@ $(function() {
         thumb += '<a class="title" href="http://www.google.com/search?q=' + title + '">' + title + '</a>';
         thumb += '</div><div id="links">' + genGoogleLinks(genTracklist(release.id)) + '</div></div>';
         return thumb;
-    }
+    };
 
     var attachThumbs = function(releases) {
         _.each(releases, function(release) {
             var thumb = genThumbnail(release);
             $('#thumbnails').append(thumb);
         });
-    }
+    };
 
     var getReleaseById = function(id) {
         var r = null;
         _.each(releases, function(release) {
-            if (release.id == id) { r = release; };
+            if (release.id == id) { r = release; }
         });
         return r;
-    }
+    };
 
     var genTracklist = function(id) {
         var release = getReleaseById(id);
@@ -175,7 +175,7 @@ $(function() {
             }
         });
         return tracks;
-    }
+    };
 
     var genGoogleLinks = function(tracks) {
         var html = '';
@@ -184,7 +184,7 @@ $(function() {
             html += '<a href="'+url+'" target="_blank">'+track+'</a>';
         });
         return html;
-    }
+    };
 
     var attachHandlers = function() {
         $('img.thumb').click(function(e) {
@@ -192,7 +192,7 @@ $(function() {
             var id = $e.attr('id');
             $('#links', $e).append(genGoogleLinks(genTracklist(id)));
         });
-    }
+    };
 
     var markAsWatched = function() {
         var watched = JSON.parse(localStorage.getItem("watched")) || {};
@@ -208,13 +208,13 @@ $(function() {
         });
         localStorage.setItem('watched', JSON.stringify(watched));
         console.log('Watched videos saved in localStorage');
-    }
+    };
 
     var toggleHideWatched = function() {
         hideWatched = !hideWatched;
-        console.log('hideWatched!', hideWatched)
+        console.log('hideWatched!', hideWatched);
         window.location = updateQueryString('hideWatched', hideWatched);
-    }
+    };
 
     var setControls = function() {
 
@@ -229,11 +229,11 @@ $(function() {
         $('.menu .controls #hide-watched').click(function() {
             toggleHideWatched();
         });
-    }
+    };
 
     var setLoadingBar = function() {
         $('.loading').width(Math.round(loadingProgress/totalToLoad * 100) + '%');
-    }
+    };
 
     var player;
     onYouTubeIframeAPIReady = function() {
@@ -246,7 +246,7 @@ $(function() {
                 'onStateChange': onPlayerStateChange
             }
         });
-    }
+    };
 
     function onPlayerReady(event) {
         event.target.playVideo();
@@ -286,7 +286,7 @@ $(function() {
                 $('.loading').hide();
             });
         });
-    }
+    };
 
     main();
 });
