@@ -13,6 +13,19 @@ $(function() {
     var loadingProgress = 0;
     var totalToLoad = 0;
 
+    //dropbox storage
+    var client = new Dropbox.Client({key: 'y3pjpej9gtzxa0w'});
+
+    client.authenticate({interactive: false}, function (error) { if (error) { alert('Authentication error: ' + error); } });
+
+    if (client.isAuthenticated()) {
+        console.log('client authenticated!')
+    }
+
+    var dropboxAuth = function() {
+        client.authenticate();
+    }
+
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -226,13 +239,11 @@ $(function() {
             $('.menu .controls #hide-watched').addClass('active');
         }
 
-        $('.menu .controls #mark').click(function() {
-            markAsWatched();
-        });
+        $('.menu .controls #mark').click(markAsWatched);
 
-        $('.menu .controls #hide-watched').click(function() {
-            toggleHideWatched();
-        });
+        $('.menu .controls #hide-watched').click(toggleHideWatched);
+
+        $('.menu .controls #dropbox').click(dropboxAuth);
     };
 
     var setLoadingBar = function() {
@@ -281,10 +292,10 @@ $(function() {
         setControls();
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
-                console.log('releases', releases);
                 getAllVideos(releases);
-                console.log('videos', allVideos);
-                player.cuePlaylist(allVideos);
+                setTimeout(function() {
+                    player.cuePlaylist(allVideos);
+                }, 3000);
                 attachThumbs(releasesWithoutVideo);
                 attachHandlers();
                 $('.loading').hide();
