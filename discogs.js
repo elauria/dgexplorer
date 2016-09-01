@@ -58,7 +58,9 @@ $(function() {
                 releases.push(release.data);
                 loadingProgress++;
                 setLoadingBar();
-                cb();
+                setTimeout(function() {
+                    cb();
+                }, 100);
             },
             error: function(err) {
                 console.warn('error', err.error());
@@ -81,7 +83,9 @@ $(function() {
                 setLoadingBar();
                 loadingProgress++;
                 setLoadingBar();
-                cb();
+                setTimeout(function() {
+                    cb();
+                }, 100);
             },
             error: function(err) {
                 console.warn('error', err.error());
