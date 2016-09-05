@@ -73,7 +73,7 @@ $(function() {
                 setLoadingBar();
                 setTimeout(function() {
                     cb();
-                }, 2000);
+                }, 3000);
             },
             error: function(err) {
                 console.warn('error', err.error());
@@ -98,7 +98,7 @@ $(function() {
                 setLoadingBar();
                 setTimeout(function() {
                     cb();
-                }, 2000);
+                }, 3000);
             },
             error: function(err) {
                 console.warn('error', err.error());
