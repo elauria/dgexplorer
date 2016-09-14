@@ -12,6 +12,8 @@ $(function() {
     var hideWatched= false;
     var loadingProgress = 0;
     var totalToLoad = 0;
+    var requests = [];
+    var throttle = 5000;   //10sec throttle
 
     //dropbox storage
     var client = new Dropbox.Client({key: 'y3pjpej9gtzxa0w'});
@@ -19,12 +21,12 @@ $(function() {
     client.authenticate({interactive: false}, function (error) { if (error) { alert('Authentication error: ' + error); } });
 
     if (client.isAuthenticated()) {
-        console.log('client authenticated!')
+        console.log('client authenticated!');
     }
 
     var dropboxAuth = function() {
         client.authenticate();
-    }
+    };
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -63,49 +65,49 @@ $(function() {
     };
 
     var getOneRelease = function(rid, cb) {
-        $.ajax({
-            url: "http://api.discogs.com/releases/"+rid,
-            jsonp: "callback",
-            dataType: "jsonp",
-            success: function(release) {
-                releases.push(release.data);
-                loadingProgress++;
-                setLoadingBar();
-                setTimeout(function() {
+        requests.push(function() {
+            $.ajax({
+                url: "http://api.discogs.com/releases/"+rid,
+                jsonp: "callback",
+                dataType: "jsonp",
+                success: function(release) {
+                    releases.push(release.data);
+                    loadingProgress++;
+                    setLoadingBar();
                     cb();
-                }, 3000);
-            },
-            error: function(err) {
-                console.warn('error', err.error());
-                loadingProgress++;
-                setLoadingBar();
-                cb();
-            }
+                },
+                error: function(err) {
+                    console.warn('error', err.error());
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }
+            });
         });
     };
 
     var getOneMaster = function(rid, cb) {
         if (!rid) { return cb(); }
-        $.ajax({
-            url: "http://api.discogs.com/masters/"+rid,
-            jsonp: "callback",
-            dataType: "jsonp",
-            success: function(master) {
-                releases.push(master.data);
-                loadingProgress++;
-                setLoadingBar();
-                loadingProgress++;
-                setLoadingBar();
-                setTimeout(function() {
+        requests.push(function() {
+            $.ajax({
+                url: "http://api.discogs.com/masters/"+rid,
+                jsonp: "callback",
+                dataType: "jsonp",
+                success: function(master) {
+                    releases.push(master.data);
+                    loadingProgress++;
+                    setLoadingBar();
+                    loadingProgress++;
+                    setLoadingBar();
                     cb();
-                }, 3000);
-            },
-            error: function(err) {
-                console.warn('error', err.error());
-                loadingProgress++;
-                setLoadingBar();
-                cb();
-            }
+                },
+                error: function(err) {
+                    console.warn('error', err.error());
+                    loadingProgress++;
+                    setLoadingBar();
+                    cb();
+                }
+            });
         });
     };
 
@@ -270,13 +272,24 @@ $(function() {
     var done = false;
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING && !done) {
-          setTimeout(stopVideo, 6000);
-          done = true;
+            setTimeout(stopVideo, 6000);
+            done = true;
         }
-      }
-      function stopVideo() {
+    }
+    function stopVideo() {
         player.stopVideo();
-      }
+    }
+
+    var fetchData = function() {
+        setInterval(function() {
+            if(requests.length > 0) {
+                var request = requests.pop();
+                if(typeof request === "function") {
+                    request();
+                }
+            }
+        }, throttle);
+    };
 
     var main = function() {
         watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
@@ -301,6 +314,7 @@ $(function() {
                 $('.loading').hide();
             });
         });
+        fetchData();
     };
 
     main();
