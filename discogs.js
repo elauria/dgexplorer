@@ -114,7 +114,6 @@ $(function() {
     var getAllReleases = function(releaseIds, cb) {
         async.eachSeries(releaseIds, getOneRelease, function(err, result) {
             if (err) { throw err; }
-            console.log('got all releases');
             cb();
         });
     };
@@ -122,7 +121,6 @@ $(function() {
     var getAllMasters = function(masterIDs, cb) {
         async.eachSeries(masterIDs, getOneMaster, function(err) {
             if (err) { throw err; }
-            console.log('got all masters');
             cb();
         });
     };
@@ -199,8 +197,8 @@ $(function() {
     var genGoogleLinks = function(tracks) {
         var html = '';
         _.each(tracks, function (track) {
-            var url = encodeURI('http://www.google.com/search?q=' + track);
-            html += '<a href="'+url+'" target="_blank">'+track+'</a>';
+            var url = encodeURI('http://www.google.com/search?q=' + track.replace('&', '&amp;'));
+            html += '<a href="'+ url +'" target="_blank">'+track+'</a>';
         });
         return html;
     };
@@ -226,12 +224,10 @@ $(function() {
             }
         });
         localStorage.setItem('watched', JSON.stringify(watched));
-        console.log('Watched videos saved in localStorage');
     };
 
     var toggleHideWatched = function() {
         hideWatched = !hideWatched;
-        console.log('hideWatched!', hideWatched);
         window.location = updateQueryString('hideWatched', hideWatched);
     };
 
