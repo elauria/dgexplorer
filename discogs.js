@@ -15,19 +15,6 @@ $(function() {
     var requests = [];
     var throttle = 5000;   //10sec throttle
 
-    //dropbox storage
-    var client = new Dropbox.Client({key: 'y3pjpej9gtzxa0w'});
-
-    client.authenticate({interactive: false}, function (error) { if (error) { alert('Authentication error: ' + error); } });
-
-    if (client.isAuthenticated()) {
-        console.log('client authenticated!');
-    }
-
-    var dropboxAuth = function() {
-        client.authenticate();
-    };
-
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
