@@ -227,8 +227,6 @@ $(function() {
         $('.menu .controls #mark').click(markAsWatched);
 
         $('.menu .controls #hide-watched').click(toggleHideWatched);
-
-        $('.menu .controls #dropbox').click(dropboxAuth);
     };
 
     var setLoadingBar = function() {
