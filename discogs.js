@@ -13,7 +13,7 @@ $(function() {
     var loadingProgress = 0;
     var totalToLoad = 0;
     var requests = [];
-    var throttle = 11000;   //10sec throttle
+    var throttle = 15000;   //15sec throttle
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
