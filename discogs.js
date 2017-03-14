@@ -13,7 +13,7 @@ $(function() {
     var loadingProgress = 0;
     var totalToLoad = 0;
     var requests = [];
-    var throttle = 5000;   //10sec throttle
+    var throttle = 11000;   //10sec throttle
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -32,7 +32,7 @@ $(function() {
             else {
                 hash = url.split('#');
                 url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
-                if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                if (typeof hash[1] !== 'undefined' && hash[1] !== null)
                     url += '#' + hash[1];
                 return url;
             }
@@ -42,7 +42,7 @@ $(function() {
                 var separator = url.indexOf('?') !== -1 ? '&' : '?';
                 hash = url.split('#');
                 url = hash[0] + separator + key + '=' + value;
-                if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                if (typeof hash[1] !== 'undefined' && hash[1] !== null)
                     url += '#' + hash[1];
                 return url;
             }
@@ -54,7 +54,7 @@ $(function() {
     var getOneRelease = function(rid, cb) {
         requests.push(function() {
             $.ajax({
-                url: "http://api.discogs.com/releases/"+rid,
+                url: "https://api.discogs.com/releases/"+rid,
                 jsonp: "callback",
                 dataType: "jsonp",
                 success: function(release) {
@@ -77,7 +77,7 @@ $(function() {
         if (!rid) { return cb(); }
         requests.push(function() {
             $.ajax({
-                url: "http://api.discogs.com/masters/"+rid,
+                url: "https://api.discogs.com/masters/"+rid,
                 jsonp: "callback",
                 dataType: "jsonp",
                 success: function(master) {
