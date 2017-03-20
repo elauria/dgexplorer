@@ -247,7 +247,7 @@ $(function() {
     };
 
     function onPlayerReady(event) {
-        //event.target.playVideo();
+        event.target.playVideo();
     }
 
     var done = false;
@@ -287,16 +287,9 @@ $(function() {
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
                 getAllVideos(releases);
-                console.log('allVideos: ', allVideos.length, allVideos)
                 setTimeout(function() {
-                    console.log('cueing');
-                    player.cuePlaylist({
-                        listType: 'playlist',
-                        list: allVideos,
-                        index: 1,
-                        suggestedQuality: 'small'
-                    });
-                }, 5000);
+                    player.cuePlaylist(allVideos);
+                }, 3000);
                 attachThumbs(releasesWithoutVideo);
                 attachHandlers();
                 $('.loading').hide();
