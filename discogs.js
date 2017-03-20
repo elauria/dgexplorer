@@ -247,7 +247,7 @@ $(function() {
     };
 
     function onPlayerReady(event) {
-        event.target.playVideo();
+        //event.target.playVideo();
     }
 
     var done = false;
@@ -290,8 +290,13 @@ $(function() {
                 console.log('allVideos: ', allVideos.length, allVideos)
                 setTimeout(function() {
                     console.log('cueing');
-                    player.cuePlaylist(allVideos);
-                }, 3000);
+                    player.cuePlaylist({
+                        listType: 'playlist',
+                        list: allVideos,
+                        index: 1,
+                        suggestedQuality: 'small'
+                    });
+                }, 5000);
                 attachThumbs(releasesWithoutVideo);
                 attachHandlers();
                 $('.loading').hide();
