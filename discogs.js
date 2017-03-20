@@ -287,7 +287,9 @@ $(function() {
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
                 getAllVideos(releases);
+                console.log('allVideos: ', allVideos.length, allVideos)
                 setTimeout(function() {
+                    console.log('cueing');
                     player.cuePlaylist(allVideos);
                 }, 3000);
                 attachThumbs(releasesWithoutVideo);
