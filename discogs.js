@@ -13,6 +13,7 @@ $(function() {
     var loadingProgress = 0;
     var totalToLoad = 0;
     var requests = [];
+    var players = [];
     var throttle = 300;   //0.3 sec throttle (~3 req/s)
 
     var getParameterByName = function (name) {
@@ -233,32 +234,45 @@ $(function() {
         $('.loading').width(Math.round(loadingProgress/totalToLoad * 100) + '%');
     };
 
-    var player;
     onYouTubeIframeAPIReady = function() {
-        player = new YT.Player('player', {
-            height: '390',
-            width: '640',
-            videoId: 'M7lc1UVf-VE',
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
+        console.log('YT API Ready');
     };
 
-    function onPlayerReady(event) {
-        event.target.playVideo();
+    var createPlayerContainers = function(n) {
+        console.log('create', n);
+        for (var i = 0; i < n; i++) {
+            $('#players').append('<div id="player' + i + '"></div>');
+        };
     }
 
-    var done = false;
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-            setTimeout(stopVideo, 6000);
-            done = true;
-        }
+    var createPlayers = function(videoBatches) {
+        _.each(videoBatches, function(playlist, idx) {
+            players.push(new YT.Player('player' + idx, {
+                height: '390',
+                width: '640',
+                videoId: 'M7lc1UVf-VE',
+                events: {
+                    'onReady': function(e) {
+                        var id = e.target.a.id.split('player')[1]
+                        e.target.cuePlaylist(videoBatches[id]);
+                    }
+                }
+            }));
+        })
     }
-    function stopVideo() {
-        player.stopVideo();
+
+    var getVideosInBatches = function(allVideos) {
+        var videoBatches = [[]];
+        var j = 0;
+        for(var i = 0; i <= allVideos.length; i++) {
+            if (videoBatches[j].length < 100) {
+                videoBatches[j].push(allVideos[i]);
+            } else {
+                j += 1;
+                videoBatches[j] = [ 'M7lc1UVf-VE' ];
+            }
+        }
+        return videoBatches;
     }
 
     var fetchData = function() {
@@ -287,9 +301,11 @@ $(function() {
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
                 getAllVideos(releases);
+                var videoBatches = getVideosInBatches(allVideos);
+                createPlayerContainers(videoBatches.length);
                 setTimeout(function() {
-                    player.cuePlaylist(allVideos);
-                }, 3000);
+                    createPlayers(videoBatches);
+                }, 2000);
                 attachThumbs(releasesWithoutVideo);
                 attachHandlers();
                 $('.loading').hide();
