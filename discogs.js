@@ -14,7 +14,7 @@ $(function() {
     var totalToLoad = 0;
     var requests = [];
     var players = [];
-    var throttle = 300;   //0.3 sec throttle (~3 req/s)
+    var throttle = 1000;   //1 sec throttle (~60 req/m)
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
