@@ -118,6 +118,10 @@ a:visited {
     margin-left: 5px;
 }
 
+.menu #watched {
+    display: inline-block;
+}
+
 .content {
     padding-top:45px;
     overflow: hidden;
