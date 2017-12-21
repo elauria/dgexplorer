@@ -289,6 +289,7 @@ $(function() {
     var main = function() {
         watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
         console.log('No. of watched videos:', watchedIDs.length);
+        $('#watched').text(watchedIDs.length)
         hideWatched = getParameterByName("hideWatched") == 'true' ? true : false;
         if (getParameterByName("releases")) {
             releaseIDs = getParameterByName("releases").split('|');
