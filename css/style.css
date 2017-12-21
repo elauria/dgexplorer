@@ -1,0 +1,144 @@
+html, body {
+    background: #333;
+    background-image: url('../images/bg_militar.png');
+    background-repeat: repeat;
+    font-family: "Helvetica";
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #eee;
+    margin-bottom: 5px;
+    float: left;
+}
+
+a:visited {
+    color: #333;
+}
+
+#player {
+    width: 660px;
+    padding: 20px;
+    color: #fff;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#player span.warning {
+    color: #ccc;
+    margin-left: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.thumbnail {
+    float: left;
+    margin: 10px;
+    height: 300px;
+    background: #000;
+    border: none;
+}
+
+.cover {
+    width: 150px;
+    min-height: 150px;
+    position: relative;
+}
+
+.cover a.title {
+    color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+.cover a:visited {
+    color: #666;
+}
+
+#thumbnails {
+    width: 100%;
+}
+
+#thumbnails #links {
+    width: 150px;
+    height: 150px;
+    overflow-y: auto;
+    white-space: normal;
+}
+
+.thumb {
+    width: 150px;
+    height: 150px;
+}
+
+.loading{
+    width: 1%;
+    position: fixed;
+    top: 45px;
+    height: 3px;
+    background: red;
+}
+
+.menu {
+    position: fixed;
+    width: 100%;
+    height: 45px;
+    background: #544b47;
+    border-bottom: 1px solid #333;
+    color: white;
+    overflow: hidden;
+}
+
+.menu span#title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 45px;
+    margin-left: 15px;
+}
+
+.menu .controls {
+    float: right;
+    width: 300px;
+    padding: 10px;
+    margin: 0;
+    line-height: 25px;
+    font-size: 20px;
+    text-align: right;
+}
+
+.menu .controls i {
+    margin-left: 5px;
+}
+
+.menu #watched {
+    display: inline-block;
+}
+
+.content {
+    padding-top:45px;
+    overflow: hidden;
+}
+
+.btn {
+    background: #a5b646;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #7e8c36;
+    font-size: 14px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.active {
+    color: #659D32;
+}
