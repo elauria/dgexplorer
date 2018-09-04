@@ -6,15 +6,24 @@ $(function() {
     var mainReleaseIDs = [];
     var releases = [];
     var notFound = [];
-    var allVideos = [ 'M7lc1UVf-VE' ];
+    var allVideos = [];
     var releasesWithoutVideo = [];
-    var watchedIDs = [];
     var hideWatched= false;
     var loadingProgress = 0;
     var totalToLoad = 0;
     var requests = [];
     var players = [];
+    var user = {};
+    var firestore = null;
+    var firestoreSettings = {
+        timestampsInSnapshots: true
+    };
     var throttle = 3000;   //3 sec throttle (~20 req/m)
+
+    var watchedVideos = {};
+    var watchedVideoIDs = [];
+
+    var watchedVideosCol = null;
 
     var getParameterByName = function (name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -126,8 +135,17 @@ $(function() {
             var uri = video.uri;
             var id = uri.split('https://www.youtube.com/watch?v=')[1];
             if (allVideos.indexOf(id) == -1) {
-                if (hideWatched && watchedIDs.indexOf(id) !== -1) return;
-                allVideos.push(id);
+                if (hideWatched) {
+                    watchedVideosCol.doc(id).get().then(function(doc) {
+                        if (doc.exists) {
+                            return;
+                        } else {
+                            allVideos.push(id);
+                        }
+                    });
+                } else {
+                    allVideos.push(id);
+                }
             }
         });
     };
@@ -199,20 +217,39 @@ $(function() {
         });
     };
 
+    var uploadLocalStorageToCloud = function() {
+        var localStorageHistory = JSON.parse(localStorage.getItem('watched')) || {};
+        _.each(localStorageHistory, function(vid, id) {
+            watchedVideosCol.doc(id).get().then(function(doc) {
+                if (!doc.exists) {
+                    watchedVideosCol.doc(id).set({ date: new Date() });
+                }
+            });
+        })
+    }
+
     var markAsWatched = function() {
-        var watched = JSON.parse(localStorage.getItem("watched")) || {};
-        watchedIDs = _.uniq(watchedIDs.concat(allVideos));
-        _.each(watchedIDs, function(id) {
-            if (typeof watched[id] === 'undefined') {
-                watched[id] = {
-                    date: new Date()
-                };
-            } else if (!hideWatched) {
-                watched[id].date = new Date();
-            }
+        _.each(allVideos, function(id) {
+            watchedVideosCol.doc(id).set({date: new Date()});
         });
-        localStorage.setItem('watched', JSON.stringify(watched));
+        updateWatchedCounter();
     };
+
+    // var fetchWatchedVideos = function(cb) {
+    //     // return JSON.parse(localStorage.getItem('watched')) || {};
+    //     watchedVideosCol.get().then(function(doc) {
+    //         watchedVideos = doc.data();
+    //         watchedVideoIDs = _.keys(watchedVideos);
+    //         cb();
+    //     });
+    // }
+
+    var saveWatchedList = function(watched) {
+        console.log('save', watched)
+        // localStorage.setItem('watched', JSON.stringify(watched));
+        var docRef = firestore.doc('/users/'+user.uid+'/history/watchedVideos');
+        docRef.set(watched);
+    }
 
     var toggleHideWatched = function() {
         hideWatched = !hideWatched;
@@ -220,13 +257,11 @@ $(function() {
     };
 
     var setControls = function() {
-
         if (hideWatched) {
             $('.menu .controls #hide-watched').addClass('active');
         }
-
+        $('.menu .controls #cloud').click(uploadLocalStorageToCloud);
         $('.menu .controls #mark').click(markAsWatched);
-
         $('.menu .controls #hide-watched').click(toggleHideWatched);
     };
 
@@ -286,10 +321,49 @@ $(function() {
         }, throttle);
     };
 
+    var updateWatchedCounter = function() {
+        watchedVideosCol.get().then(function(querySnapshot) {
+            console.log('No. of watched videos:', querySnapshot.size);
+            $('#watched').text(querySnapshot.size)
+        })
+    }
+
     var main = function() {
-        watchedIDs = _.keys(JSON.parse(localStorage.getItem("watched")));
-        console.log('No. of watched videos:', watchedIDs.length);
-        $('#watched').text(watchedIDs.length)
+        
+        var provider = new firebase.auth.GoogleAuthProvider();
+        
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            user = result.user;
+
+            firestore = firebase.firestore();
+            firestore.settings(firestoreSettings);
+
+            watchedVideosCol = firestore.collection('/users/'+user.uid+'/history/');
+            console.log(watchedVideosCol);
+
+            // fetchWatchedVideos(function() {
+                start();
+            // });
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+          // ...
+          console.log('Error', error)
+        });
+    };
+
+    var start = function() {
+
+        updateWatchedCounter();
+
         hideWatched = getParameterByName("hideWatched") == 'true' ? true : false;
         if (getParameterByName("releases")) {
             releaseIDs = getParameterByName("releases").split('|');
@@ -298,7 +372,9 @@ $(function() {
             masterIDs = getParameterByName("masters").split('|');
         }
         totalToLoad = releaseIDs.length + masterIDs.length;
+        
         setControls();
+        
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
                 getAllVideos(releases);
@@ -312,8 +388,9 @@ $(function() {
                 $('.loading').hide();
             });
         });
+
         fetchData();
-    };
+    }
 
     main();
 });

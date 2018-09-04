@@ -1,0 +1,25 @@
+{
+  "name": "dgexplorer",
+  "version": "0.1.0",
+  "description": "digging tool",
+  "main": "public/discogs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elauria/dgexplorer.git"
+  },
+  "keywords": [
+    "music"
+  ],
+  "author": "Emanuel Lauria",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/elauria/dgexplorer/issues"
+  },
+  "homepage": "https://github.com/elauria/dgexplorer#readme",
+  "dependencies": {
+    "firebase-functions": "^2.0.5"
+  }
+}

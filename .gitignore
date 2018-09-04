@@ -1,2 +1,5 @@
 .*.un~
 .DS_Store
+node_modules/
+.firebase/
+.firebaserc
