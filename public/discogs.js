@@ -218,14 +218,19 @@ $(function() {
     };
 
     var uploadLocalStorageToCloud = function() {
+        var interval, i = 0;
         var localStorageHistory = JSON.parse(localStorage.getItem('watched')) || {};
-        _.each(localStorageHistory, function(vid, id) {
-            watchedVideosCol.doc(id).get().then(function(doc) {
-                if (!doc.exists) {
-                    watchedVideosCol.doc(id).set({ date: new Date() });
-                }
-            });
-        })
+        var keys = Object.keys(localStorageHistory)
+        var max = keys.length
+
+        function upload() {
+            watchedVideosCol.doc(keys[i]).set({ date: localStorageHistory[keys[i]].date });
+            console.log('Uploaded:', i, '/', max, '=>', keys[i])
+            if (i < max) i ++;
+            else clearInterval(interval);
+        }
+
+        inteval = setInterval(upload, 100);
     }
 
     var markAsWatched = function() {
@@ -234,15 +239,6 @@ $(function() {
         });
         updateWatchedCounter();
     };
-
-    // var fetchWatchedVideos = function(cb) {
-    //     // return JSON.parse(localStorage.getItem('watched')) || {};
-    //     watchedVideosCol.get().then(function(doc) {
-    //         watchedVideos = doc.data();
-    //         watchedVideoIDs = _.keys(watchedVideos);
-    //         cb();
-    //     });
-    // }
 
     var saveWatchedList = function(watched) {
         console.log('save', watched)
