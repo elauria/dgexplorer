@@ -14,8 +14,8 @@ $(function() {
     var requests = [];
     var players = [];
     var user = {};
-    var firestore = null;
-    var firestoreSettings = {
+    var db = null;
+    var dbSettings = {
         timestampsInSnapshots: true
     };
     var throttle = 3000;   //3 sec throttle (~20 req/m)
@@ -218,19 +218,25 @@ $(function() {
     };
 
     var uploadLocalStorageToCloud = function() {
-        var interval, i = 0;
         var localStorageHistory = JSON.parse(localStorage.getItem('watched')) || {};
-        var keys = Object.keys(localStorageHistory)
-        var max = keys.length
+        var batch = db.batch();
 
-        function upload() {
-            watchedVideosCol.doc(keys[i]).set({ date: localStorageHistory[keys[i]].date });
-            console.log('Uploaded:', i, '/', max, '=>', keys[i])
-            if (i < max) i ++;
-            else clearInterval(interval);
-        }
+        _.each(localStorageHistory, function(vid, key) {
+            var doc = watchedVideosCol.doc(key);
+            batch.set(doc, { date: vid.date })
+            console.log('Set')
+        })
 
-        inteval = setInterval(upload, 100);
+        console.log('commiting...')
+
+        batch
+            .commit()
+            .then(function() {
+                console.log('Commited', max)
+            })
+            .catch(function(e) {
+                console.log('Error', e)
+            })
     }
 
     var markAsWatched = function() {
@@ -239,13 +245,6 @@ $(function() {
         });
         updateWatchedCounter();
     };
-
-    var saveWatchedList = function(watched) {
-        console.log('save', watched)
-        // localStorage.setItem('watched', JSON.stringify(watched));
-        var docRef = firestore.doc('/users/'+user.uid+'/history/watchedVideos');
-        docRef.set(watched);
-    }
 
     var toggleHideWatched = function() {
         hideWatched = !hideWatched;
@@ -334,10 +333,10 @@ $(function() {
             // The signed-in user info.
             user = result.user;
 
-            firestore = firebase.firestore();
-            firestore.settings(firestoreSettings);
+            db = firebase.firestore();
+            db.settings(dbSettings);
 
-            watchedVideosCol = firestore.collection('/users/'+user.uid+'/history/');
+            watchedVideosCol = db.collection('/users/'+user.uid+'/history/');
             console.log(watchedVideosCol);
 
             // fetchWatchedVideos(function() {
