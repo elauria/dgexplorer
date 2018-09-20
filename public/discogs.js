@@ -219,24 +219,37 @@ $(function() {
 
     var uploadLocalStorageToCloud = function() {
         var localStorageHistory = JSON.parse(localStorage.getItem('watched')) || {};
-        var batch = db.batch();
+        var keys = Object.keys(localStorageHistory);
+        var offset = 0;
+        var batch = null;
 
-        _.each(localStorageHistory, function(vid, key) {
-            var doc = watchedVideosCol.doc(key);
-            batch.set(doc, { date: vid.date })
-            console.log('Set')
-        })
+        function makeBatch(offset) {
+            batch = db.batch();
+            for (let i = offset; i <= offset+450; i++) {
+                var key = keys[i];
+                var doc = watchedVideosCol.doc(key);
+                batch.set(doc, { date: localStorageHistory[key].date })
+                console.log('batching...')
+            }
+            commit();
+        }
 
-        console.log('commiting...')
+        function commit() {
+            batch
+                .commit()
+                .then(function() {
+                    console.log('Commited', offset)
+                    if (offset < keys.length) {
+                        offset = offset + 450
+                        makeBatch(offset)
+                    }
+                })
+                .catch(function(e) {
+                    console.log('Error', e)
+                })           
+        }
 
-        batch
-            .commit()
-            .then(function() {
-                console.log('Commited', max)
-            })
-            .catch(function(e) {
-                console.log('Error', e)
-            })
+        makeBatch(offset);
     }
 
     var markAsWatched = function() {
