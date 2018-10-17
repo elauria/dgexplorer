@@ -4,7 +4,9 @@
   "description": "digging tool",
   "main": "public/discogs.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "firebase serve",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix ./public/discogs.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +23,12 @@
   "homepage": "https://github.com/elauria/dgexplorer#readme",
   "dependencies": {
     "firebase-functions": "^2.0.5"
+  },
+  "devDependencies": {
+    "@ljharb/eslint-config": "^13.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.7.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.0.0"
   }
 }

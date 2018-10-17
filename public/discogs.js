@@ -233,7 +233,7 @@ $(function() {
 
         function makeBatch(offset) {
             batch = db.batch();
-            for (let i = offset; i <= offset+450; i++) {
+            for (i = offset; i <= offset+450; i++) {
                 var key = keys[i];
                 var doc = watchedVideosCol.doc(key);
                 batch.set(doc, { date: localStorageHistory[key].date })
