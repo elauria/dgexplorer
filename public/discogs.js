@@ -122,32 +122,40 @@ $(function() {
         });
     };
 
-    var getAllVideos = function(releases) {
-        var videos = [];
-        _.each(releases, function(release) {
-            getReleaseVideos(release);
-        });
+    var getAllVideos = function(releases, cb) {
+        async.eachSeries(releases, getReleaseVideos, function(err) {
+            if (err) { throw err; }
+            cb();
+        })
     };
 
-    var getReleaseVideos = function(release) {
-        if (!release.videos) { releasesWithoutVideo.push(release); }
-        _.each(release.videos, function (video, i) {
+    var getReleaseVideos = function(release, cb) {
+        if (!release.videos) {
+            releasesWithoutVideo.push(release);
+            return cb();
+        }
+        
+        async.eachSeries(release.videos, function (video, _cb) {
             var uri = video.uri;
             var id = uri.split('https://www.youtube.com/watch?v=')[1];
-            if (allVideos.indexOf(id) == -1) {
+            if (allVideos.indexOf(id) === -1) {
                 if (hideWatched) {
                     watchedVideosCol.doc(id).get().then(function(doc) {
-                        if (doc.exists) {
-                            return;
-                        } else {
-                            allVideos.push(id);
-                        }
+                        // video has been watched, so kip it.
+                        console.log('skip', id)
+                        return _cb();
+                    })
+                    .catch(function(e) {
+                        // video hasn't been watched. Add it.
+                        allVideos.push(id);
+                        return _cb()
                     });
                 } else {
                     allVideos.push(id);
+                    return _cb();
                 }
             }
-        });
+        }, cb);
     };
 
     var genThumbnail = function(release) {
@@ -350,7 +358,6 @@ $(function() {
             db.settings(dbSettings);
 
             watchedVideosCol = db.collection('/users/'+user.uid+'/history/');
-            console.log(watchedVideosCol);
 
             // fetchWatchedVideos(function() {
                 start();
@@ -385,15 +392,17 @@ $(function() {
         
         getAllMasters(masterIDs, function() {
             getAllReleases(releaseIDs, function() {
-                getAllVideos(releases);
-                var videoBatches = getVideosInBatches(allVideos);
-                createPlayerContainers(videoBatches.length);
-                setTimeout(function() {
-                    createPlayers(videoBatches);
-                }, 2000);
-                attachThumbs(releasesWithoutVideo);
-                attachHandlers();
-                $('.loading').hide();
+                getAllVideos(releases, function() {
+                    var videoBatches = getVideosInBatches(allVideos);
+                    createPlayerContainers(videoBatches.length);
+                    setTimeout(function() {
+                        createPlayers(videoBatches);
+                    }, 2000);
+                    attachThumbs(releasesWithoutVideo);
+                    attachHandlers();
+                    $('.loading').hide();                   
+                });
+
             });
         });
 
