@@ -148,15 +148,21 @@ $(function() {
       function(video, _cb) {
         var uri = video.uri;
         var id = uri.split("https://www.youtube.com/watch?v=")[1];
+
         if (allVideos.indexOf(id) === -1) {
           if (hideWatched) {
             watchedVideosCol
               .doc(id)
               .get()
               .then(function(doc) {
-                // video has been watched, so kip it.
-                console.log("skip", id);
-                return _cb();
+                if (doc.exists) {
+                  // video has been watched, so kip it.
+                  return _cb();
+                } else {
+                  // video doesn't exist, add it
+                  allVideos.push(id);
+                  return _cb();
+                }
               })
               .catch(function(e) {
                 // video hasn't been watched. Add it.
@@ -167,6 +173,8 @@ $(function() {
             allVideos.push(id);
             return _cb();
           }
+        } else {
+          return _cb();
         }
       },
       cb
@@ -410,7 +418,7 @@ $(function() {
   };
 
   var start = function() {
-    updateWatchedCounter();
+    // updateWatchedCounter();
 
     hideWatched = getParameterByName("hideWatched") == "true" ? true : false;
     if (getParameterByName("releases")) {
