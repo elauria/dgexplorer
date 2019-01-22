@@ -14,11 +14,12 @@ $(function() {
   var requests = [];
   var players = [];
   var user = {};
+  var token = "vKScVyTocMtDBOYwOOcAbjhXndJFpyqQ";
   var db = null;
   var dbSettings = {
     timestampsInSnapshots: true
   };
-  var throttle = 3000; //3 sec throttle (~20 req/m)
+  var throttle = 1000; //1 sec throttle (~60 req/m)
 
   var watchedVideos = {};
   var watchedVideoIDs = [];
@@ -66,6 +67,9 @@ $(function() {
       $.ajax({
         url: "https://api.discogs.com/releases/" + rid,
         jsonp: "callback",
+        data: {
+          token: token
+        },
         dataType: "jsonp",
         success: function(release) {
           releases.push(release.data);
@@ -91,6 +95,9 @@ $(function() {
       $.ajax({
         url: "https://api.discogs.com/masters/" + rid,
         jsonp: "callback",
+        data: {
+          token: token
+        },
         dataType: "jsonp",
         success: function(master) {
           releases.push(master.data);
