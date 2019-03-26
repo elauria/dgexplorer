@@ -425,7 +425,7 @@ $(function() {
   };
 
   var start = function() {
-    // updateWatchedCounter();
+    updateWatchedCounter();
 
     hideWatched = getParameterByName("hideWatched") == "true" ? true : false;
     if (getParameterByName("releases")) {
