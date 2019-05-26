@@ -14,7 +14,8 @@ $(function() {
   var requests = [];
   var players = [];
   var user = {};
-  var token = "vKScVyTocMtDBOYwOOcAbjhXndJFpyqQ";
+  var key = "gxBBxqoarieJItbUyIyU";
+  var secret = "vKScVyTocMtDBOYwOOcAbjhXndJFpyqQ";
   var db = null;
   var dbSettings = {
     timestampsInSnapshots: true
@@ -68,7 +69,8 @@ $(function() {
         url: "https://api.discogs.com/releases/" + rid,
         jsonp: "callback",
         data: {
-          token: token
+          key: key,
+          secret: secret
         },
         dataType: "jsonp",
         success: function(release) {
@@ -96,7 +98,8 @@ $(function() {
         url: "https://api.discogs.com/masters/" + rid,
         jsonp: "callback",
         data: {
-          token: token
+          key: key,
+          secret: secret
         },
         dataType: "jsonp",
         success: function(master) {
@@ -398,7 +401,7 @@ $(function() {
       .signInWithPopup(provider)
       .then(function(result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
+        // var token = result.credential.accessToken;
         // The signed-in user info.
         user = result.user;
 
