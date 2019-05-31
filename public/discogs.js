@@ -13,9 +13,10 @@ $(function() {
   var totalToLoad = 0;
   var requests = [];
   var players = [];
-  var user = {};
+  var user = firebase.auth().currentUser;
   var key = "gxBBxqoarieJItbUyIyU";
   var secret = "vKScVyTocMtDBOYwOOcAbjhXndJFpyqQ";
+  var provider = new firebase.auth.GoogleAuthProvider();
   var db = null;
   var dbSettings = {
     timestampsInSnapshots: true
@@ -393,13 +394,19 @@ $(function() {
     });
   };
 
-  var main = function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-
+  var login = function() {
     firebase
       .auth()
-      .signInWithPopup(provider)
+      .signInWithRedirect(provider);
+  }
+
+  var main = function() {
+
+     firebase
+      .auth()
+      .getRedirectResult()
       .then(function(result) {
+
         // This gives you a Google Access Token. You can use it to access the Google API.
         // var token = result.credential.accessToken;
         // The signed-in user info.
@@ -410,9 +417,7 @@ $(function() {
 
         watchedVideosCol = db.collection("/users/" + user.uid + "/history/");
 
-        // fetchWatchedVideos(function() {
         start();
-        // });
       })
       .catch(function(error) {
         // Handle Errors here.
@@ -424,10 +429,18 @@ $(function() {
         var credential = error.credential;
         // ...
         console.log("Error", error);
+
+        if (errorMessage === "user is null") {
+          login();
+        }
       });
+
   };
 
   var start = function() {
+
+    setControls();
+
     updateWatchedCounter();
 
     hideWatched = getParameterByName("hideWatched") == "true" ? true : false;
@@ -438,8 +451,6 @@ $(function() {
       masterIDs = getParameterByName("masters").split("|");
     }
     totalToLoad = releaseIDs.length + masterIDs.length;
-
-    setControls();
 
     getAllMasters(masterIDs, function() {
       getAllReleases(releaseIDs, function() {
@@ -457,7 +468,7 @@ $(function() {
     });
 
     fetchData();
-  };
-
+  };  
+  
   main();
 });
