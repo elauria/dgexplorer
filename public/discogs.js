@@ -319,9 +319,6 @@ $(function() {
   };
 
   var setControls = function() {
-    if (hideWatched) {
-      $(".menu .controls #hide-watched").addClass("active");
-    }
     $(".menu .controls #cloud").click(uploadLocalStorageToCloud);
     $(".menu .controls #mark").click(markAsWatched);
     $(".menu .controls #hide-watched").click(toggleHideWatched);
@@ -430,7 +427,7 @@ $(function() {
         // ...
         console.log("Error", error);
 
-        if (errorMessage === "user is null") {
+        if (errorMessage === "user is null" || errorMessage === "null is not an object (evaluating 'user.uid')") {
           login();
         }
       });
@@ -451,6 +448,10 @@ $(function() {
       masterIDs = getParameterByName("masters").split("|");
     }
     totalToLoad = releaseIDs.length + masterIDs.length;
+
+    if (hideWatched) {
+      $(".menu .controls #hide-watched").addClass("active");
+    }
 
     getAllMasters(masterIDs, function() {
       getAllReleases(releaseIDs, function() {
