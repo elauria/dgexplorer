@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Discogs Explorer</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/font-awesome.css">
+        <script src="jquery-latest.min.js"></script>
+        <script src="lodash.min.js"></script>
+        <script src="async.js"></script>
+        <script src="https://www.youtube.com/iframe_api"></script>
+        <script src="discogs.js"></script>
+        
+        <!-- Firebase App is always required and must be first -->
+        <script src="/__/firebase/5.4.1/firebase-app.js"></script>
+
+        <!-- Add additional services that you want to use -->
+        <script src="/__/firebase/5.4.1/firebase-auth.js"></script>
+        <script src="/firebase-firestore.js"></script>
+        <!-- <script src="/__/firebase/5.4.1/firebase-messaging.js"></script> -->
+        <!-- <script src="/__/firebase/5.4.1/firebase-functions.js"></script> -->
+        <!-- <script src="/__/firebase/5.4.1/firebase-storage.js"></script> -->
+
+        <script src="/__/firebase/init.js"></script>
+
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyDfzTCcVt30uLKOsmWh-Q5qCAxAEbBCyy4",
+                authDomain: "dgexplorer-1a59c.firebaseapp.com",
+                databaseURL: "https://dgexplorer-1a59c.firebaseio.com",
+                projectId: "dgexplorer-1a59c",
+                storageBucket: "",
+                messagingSenderId: "322629437691"
+            };
+            console.log('Initialized Firebase', firebase.app().name);
+        </script>
+
+    </head>
+    <body>
+        <div class="menu">
+            <span id="title"><i id="logo" class="fa fa-diamond"></i> Digger</span>
+            <div class="controls">
+                <div id="watched"></div>
+                <i id="cloud" class="fa fa-cloud-upload clickable" title="Upload local history to Cloud"></i>
+                <i id="mark" class="fa fa-check clickable" title="Mark all videos as watched"></i>
+                <i id="hide-watched" class="fa fa-eye clickable" title="Hide watched videos"></i>
+            </div>
+        </div>
+        <div class="loading"></div>
+        <div class="content">
+            <div id="players"></div>
+            <div id="thumbnails"></div>
+        </div>
+    </body>
+</html>
